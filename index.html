@@ -79,9 +79,16 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
 .sub-chip[data-subtype="relayFormA"]{--scolor:#6d28d9}
 .sub-chip[data-subtype="relayFormC"]{--scolor:#a21caf}
 /* Advanced */
-.adv-group{margin-bottom:10px}
+.adv-group{border:1px solid var(--g200);border-radius:6px;overflow:hidden;margin-bottom:6px}
 .adv-group:last-child{margin-bottom:0}
-.adv-group-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g400);margin-bottom:5px;padding-left:2px}
+.adv-group-label{display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g500);padding:7px 10px;cursor:pointer;user-select:none;background:var(--g50);transition:background .12s}
+.adv-group-label:hover{background:var(--g100)}
+.adv-group-label .arrow{font-size:9px;color:var(--g400);transition:transform .18s}
+.adv-group.open .adv-group-label .arrow{transform:rotate(180deg)}
+.adv-group-label .cnt{font-size:9px;font-weight:700;background:var(--navy);color:#fff;border-radius:8px;padding:1px 5px;display:none}
+.adv-group-label .cnt.visible{display:inline}
+.adv-group-body{display:none;padding:4px 6px 6px}
+.adv-group.open .adv-group-body{display:block}
 .adv-item{display:flex;align-items:center;gap:8px;padding:5px 4px;border-radius:5px;cursor:pointer;transition:background .12s;user-select:none}
 .adv-item:hover{background:var(--g100)}
 .adv-check{appearance:none;width:15px;height:15px;border:2px solid var(--g400);border-radius:3px;cursor:pointer;flex-shrink:0;position:relative;transition:all .12s}
@@ -273,27 +280,35 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
         <span class="req-badge opt">Optional</span>
       </div>
       <div class="step-body">
-        <div class="adv-group">
-          <div class="adv-group-label">Cloud &amp; IoT</div>
-          <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="mqtt"><span class="adv-text">📡 MQTT</span></label>
-          <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="azure"><span class="adv-text">☁️ Azure IoT Hub</span></label>
-          <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="restful"><span class="adv-text">🌍 RESTful Web API</span></label>
-          <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="snmp"><span class="adv-text">📊 SNMP</span></label>
+        <div class="adv-group" id="grp-cloud">
+          <div class="adv-group-label" onclick="toggleGrp('grp-cloud')">☁️ Cloud &amp; IoT<span class="cnt" id="cnt-cloud"></span><span class="arrow">▼</span></div>
+          <div class="adv-group-body">
+            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="mqtt"><span class="adv-text">📡 MQTT</span></label>
+            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="azure"><span class="adv-text">☁️ Azure IoT Hub</span></label>
+            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="restful"><span class="adv-text">🌍 RESTful Web API</span></label>
+            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="snmp"><span class="adv-text">📊 SNMP</span></label>
+          </div>
         </div>
-        <div class="adv-group">
-          <div class="adv-group-label">Wiring</div>
-          <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="daisy"><span class="adv-text">🔗 Daisy Chain</span></label>
+        <div class="adv-group" id="grp-wiring">
+          <div class="adv-group-label" onclick="toggleGrp('grp-wiring')">🔗 Wiring<span class="cnt" id="cnt-wiring"></span><span class="arrow">▼</span></div>
+          <div class="adv-group-body">
+            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="daisy"><span class="adv-text">🔗 Daisy Chain</span></label>
+          </div>
         </div>
-        <div class="adv-group">
-          <div class="adv-group-label">Protocol</div>
-          <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="modbusTCP"><span class="adv-text">⚙️ Modbus/TCP</span></label>
-          <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="modbusRTU"><span class="adv-text">⚙️ Modbus/RTU</span></label>
-          <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="profinet"><span class="adv-text">🔵 PROFINET</span></label>
+        <div class="adv-group" id="grp-protocol">
+          <div class="adv-group-label" onclick="toggleGrp('grp-protocol')">⚙️ Protocol<span class="cnt" id="cnt-protocol"></span><span class="arrow">▼</span></div>
+          <div class="adv-group-body">
+            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="modbusTCP"><span class="adv-text">⚙️ Modbus/TCP</span></label>
+            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="modbusRTU"><span class="adv-text">⚙️ Modbus/RTU</span></label>
+            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="profinet"><span class="adv-text">🔵 PROFINET</span></label>
+          </div>
         </div>
-        <div class="adv-group">
-          <div class="adv-group-label">Environment</div>
-          <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="ruggedized"><span class="adv-text">🏭 Ruggedized (wide temp -40~85°C)</span></label>
-          <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="ip67"><span class="adv-text">💧 IP67 (outdoor / waterproof)</span></label>
+        <div class="adv-group" id="grp-env">
+          <div class="adv-group-label" onclick="toggleGrp('grp-env')">🏭 Environment<span class="cnt" id="cnt-env"></span><span class="arrow">▼</span></div>
+          <div class="adv-group-body">
+            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="ruggedized"><span class="adv-text">🏭 Ruggedized (wide temp -40~85°C)</span></label>
+            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="ip67"><span class="adv-text">💧 IP67 (outdoor / waterproof)</span></label>
+          </div>
         </div>
       </div>
     </div>
@@ -708,6 +723,29 @@ function sec(title,rows){return`<div class="spec-section"><div class="spec-secti
 function closeModal(e){if(e.target===document.getElementById('modal-overlay'))closeModalDirect();}
 function closeModalDirect(){document.getElementById('modal-overlay').classList.remove('open');document.body.style.overflow='';}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModalDirect();});
+
+// Collapsible groups
+function toggleGrp(id){document.getElementById(id).classList.toggle('open');}
+const GRP_FIDS={
+  'grp-cloud':   ['mqtt','azure','restful','snmp'],
+  'grp-wiring':  ['daisy'],
+  'grp-protocol':['modbusTCP','modbusRTU','profinet'],
+  'grp-env':     ['ruggedized','ip67'],
+};
+const GRP_CNT_ID={'grp-cloud':'cnt-cloud','grp-wiring':'cnt-wiring','grp-protocol':'cnt-protocol','grp-env':'cnt-env'};
+function updateGrpCounts(){
+  for(const [grp,fids] of Object.entries(GRP_FIDS)){
+    const n=fids.filter(f=>state.features.has(f)).length;
+    const el=document.getElementById(GRP_CNT_ID[grp]);
+    if(el){el.textContent=n||'';el.classList.toggle('visible',n>0);}
+  }
+}
+document.querySelectorAll('.adv-check').forEach(cb=>{
+  cb.addEventListener('change',updateGrpCounts);
+});
+// Also reset counts when syncAdv is called
+const _origSyncAdv=syncAdv;
+syncAdv=function(){_origSyncAdv();updateGrpCounts();};
 
 updateSteps();render();
 </script>
