@@ -7,7 +7,8 @@
 <style>
 :root{
   --navy:#1d3461;--navy-dk:#152548;--navy-lt:#2a4a8a;--orange:#e8401c;
-  --g50:#f8fafc;--g100:#f1f5f9;--g200:#e2e8f0;--g400:#94a3b8;--g500:#64748b;--g700:#374151;
+  --g50:#f8fafc;--g100:#f1f5f9;--g200:#e2e8f0;--g300:#cbd5e1;
+  --g400:#94a3b8;--g500:#64748b;--g700:#374151;
   --shadow:0 2px 10px rgba(29,52,97,.1);--shadow-lg:0 6px 24px rgba(29,52,97,.16);--r:9px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -30,7 +31,7 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
 .step-card.locked .step-label{color:var(--g400)}
 .req-badge{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 6px;border-radius:10px}
 .req-badge.req{background:#fee2e2;color:#b91c1c}
-.req-badge.opt{background:#e0f2fe;color:#0369a1}
+.req-badge.opt{background:var(--g200);color:var(--g500)}
 .req-badge.done{background:#dcfce7;color:#166534}
 .step-body{padding:12px}
 /* Communication tiles */
@@ -42,6 +43,14 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
 .comm-name{font-size:13px;font-weight:700}
 .comm-sub{font-size:10px;color:var(--g500);margin-top:1px}
 .comm-tile.on .comm-sub{color:rgba(255,255,255,.65)}
+/* Sub-chips */
+.sub-chips{display:none;flex-direction:column;gap:6px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--g200)}
+.sub-chips.visible{display:flex}
+.sub-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--g400)}
+.sub-row{display:flex;flex-wrap:wrap;gap:5px}
+.sub-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;user-select:none;border:1.5px solid var(--g300);background:#fff;color:var(--g500);transition:all .13s}
+.sub-chip:hover{border-color:var(--g500);color:var(--g700)}
+.sub-chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
 /* I/O chips */
 .io-grid{display:flex;flex-wrap:wrap;gap:6px}
 .io-chip{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;user-select:none;border:1.5px solid var(--g200);background:var(--g50);color:var(--g500);transition:all .13s}
@@ -54,31 +63,7 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
 .io-chip[data-io="hasDI"]{--dot:#22c55e}
 .io-chip[data-io="hasDO"]{--dot:#f59e0b}
 .io-chip[data-io="hasRelay"]{--dot:#a855f7}
-/* Sub-chips */
-.sub-chips{display:none;flex-direction:column;gap:6px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--g200)}
-.sub-chips.visible{display:flex}
-.sub-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--g400)}
-.sub-row{display:flex;flex-wrap:wrap;gap:5px}
-.sub-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;user-select:none;border:1.5px solid var(--g200);background:var(--g50);color:var(--g500);transition:all .13s}
-.sub-chip:hover{border-color:var(--g400);color:var(--g700)}
-.sub-chip.on{background:var(--scolor);border-color:var(--scolor);color:#fff}
-/* AI sub-chip colors */
-.sub-chip[data-subtype="voltcurr"]{--scolor:#2563eb}
-.sub-chip[data-subtype="tc"]{--scolor:#dc2626}
-.sub-chip[data-subtype="rtd"]{--scolor:#9333ea}
-/* DI sub-chip colors */
-.sub-chip[data-subtype="diSink"]{--scolor:#15803d}
-.sub-chip[data-subtype="diSource"]{--scolor:#0891b2}
-/* DO sub-chip colors */
-.sub-chip[data-subtype="doSink"]{--scolor:#d97706}
-.sub-chip[data-subtype="doSource"]{--scolor:#ea580c}
-/* AO sub-chip colors */
-.sub-chip[data-subtype="aoVoltage"]{--scolor:#7c3aed}
-.sub-chip[data-subtype="aoCurrent"]{--scolor:#be185d}
-/* Relay sub-chip colors */
-.sub-chip[data-subtype="relayFormA"]{--scolor:#6d28d9}
-.sub-chip[data-subtype="relayFormC"]{--scolor:#a21caf}
-/* Advanced */
+/* Step 3 filter chips */
 .adv-group{border:1px solid var(--g200);border-radius:6px;overflow:hidden;margin-bottom:6px}
 .adv-group:last-child{margin-bottom:0}
 .adv-group-label{display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g500);padding:7px 10px;cursor:pointer;user-select:none;background:var(--g50);transition:background .12s}
@@ -87,14 +72,12 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
 .adv-group.open .adv-group-label .arrow{transform:rotate(180deg)}
 .adv-group-label .cnt{font-size:9px;font-weight:700;background:var(--navy);color:#fff;border-radius:8px;padding:1px 5px;display:none}
 .adv-group-label .cnt.visible{display:inline}
-.adv-group-body{display:none;padding:4px 6px 6px}
+.adv-group-body{display:none;padding:8px}
 .adv-group.open .adv-group-body{display:block}
-.adv-item{display:flex;align-items:center;gap:8px;padding:5px 4px;border-radius:5px;cursor:pointer;transition:background .12s;user-select:none}
-.adv-item:hover{background:var(--g100)}
-.adv-check{appearance:none;width:15px;height:15px;border:2px solid var(--g400);border-radius:3px;cursor:pointer;flex-shrink:0;position:relative;transition:all .12s}
-.adv-check:checked{background:var(--navy);border-color:var(--navy)}
-.adv-check:checked::after{content:'';position:absolute;left:2px;top:-1px;width:5px;height:8px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg)}
-.adv-text{font-size:12px;color:var(--g700);display:flex;align-items:center;gap:5px}
+.fchip-row{display:flex;flex-wrap:wrap;gap:5px}
+.fchip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;user-select:none;border:1.5px solid var(--g300);background:#fff;color:var(--g500);transition:all .13s}
+.fchip:hover{border-color:var(--g500);color:var(--g700)}
+.fchip.on{background:var(--navy);border-color:var(--navy);color:#fff}
 .reset-btn{width:100%;padding:9px;border:1.5px solid var(--g200);border-radius:var(--r);background:#fff;color:var(--g500);font-size:12px;font-weight:500;cursor:pointer;transition:all .13s}
 .reset-btn:hover{background:var(--g100);border-color:var(--g400);color:var(--g700)}
 /* Main */
@@ -114,32 +97,27 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
 .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:12px}
 /* Cards */
 .card{background:#fff;border-radius:var(--r);border:1.5px solid var(--g200);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:pointer;transition:box-shadow .18s,transform .18s,border-color .18s}
-.card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:var(--navy-lt)}
+.card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:#9fb3d4}
 .card-head{background:var(--navy);padding:10px 13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .card-model{color:#fff;font-size:13.5px;font-weight:700}
 .card-series{background:var(--orange);color:#fff;font-size:9.5px;font-weight:700;border-radius:3px;padding:2px 6px;white-space:nowrap}
 .card-body{padding:10px 13px;flex:1;display:flex;flex-direction:column;gap:7px}
 .card-desc{font-size:11.5px;color:var(--g500);line-height:1.45}
 .card-io-row{display:flex;flex-wrap:wrap;gap:5px}
-.ciob{font-size:11px;font-weight:700;padding:4px 9px;border-radius:5px;display:inline-flex;align-items:center;gap:4px;line-height:1}
-.ciob .ch{font-size:9.5px;font-weight:500;opacity:.75}
-.ciob.ai{background:#dbeafe;color:#1d4ed8}
-.ciob.ao{background:#fce7f3;color:#9d174d}
-.ciob.di{background:#dcfce7;color:#15803d}
-.ciob.do{background:#fef9c3;color:#92400e}
-.ciob.relay{background:#ede9fe;color:#6d28d9}
+.ciob{font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:3px;line-height:1;border:1px solid transparent}
+.ciob .ch{font-size:9.5px;font-weight:400;opacity:.8}
+.ciob.ai{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.ciob.ao{background:#fdf2f8;color:#9d174d;border-color:#fbcfe8}
+.ciob.di{background:#f0fdf4;color:#15803d;border-color:#bbf7d0}
+.ciob.do{background:#fefce8;color:#854d0e;border-color:#fde68a}
+.ciob.relay{background:#faf5ff;color:#6b21a8;border-color:#e9d5ff}
 .card-div{border:none;border-top:1px solid var(--g200)}
-.card-feats-grouped{display:flex;flex-direction:column;gap:5px}
+.card-feats-grouped{display:flex;flex-direction:column;gap:4px}
 .feat-group{display:flex;align-items:baseline;gap:6px}
 .feat-group-label{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--g400);flex-shrink:0;min-width:44px}
 .feat-group-chips{display:flex;flex-wrap:wrap;gap:3px}
-.cfeat{font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:4px;transition:opacity .12s}
-.cfeat.dim{opacity:.15}
-.cfeat.conn{background:#dbeafe;color:#1e40af}
-.cfeat.smart{background:#fef9c3;color:#78350f}
-.cfeat.cloud{background:#d1fae5;color:#065f46}
-.cfeat.plc{background:#ede9fe;color:#5b21b6}
-.cfeat.env{background:#fce7f3;color:#9d174d}
+.cfeat{font-size:9.5px;font-weight:500;padding:2px 6px;border-radius:3px;background:var(--g100);color:var(--g500);border:1px solid var(--g200)}
+.cfeat.dim{opacity:.2}
 .card-hint{font-size:10px;color:var(--g400);text-align:right;margin-top:auto}
 .no-results{grid-column:1/-1;text-align:center;padding:50px;color:var(--g400)}
 .no-results p{font-size:14px;margin:10px 0 6px}
@@ -198,12 +176,25 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
         <div class="comm-grid">
           <div class="comm-tile" data-comm="ethernet">
             <span class="comm-icon">🌐</span>
-            <div><div class="comm-name">Ethernet LAN</div><div class="comm-sub">ADAM-500 / 6000 / 6200 / 200</div></div>
+            <div><div class="comm-name">Ethernet LAN</div><div class="comm-sub">ADAM-500 / 6000 / 6200 / 6300 / 200</div></div>
           </div>
           <div class="comm-tile" data-comm="rs485">
             <span class="comm-icon">🔌</span>
             <div><div class="comm-name">RS-485 Bus</div><div class="comm-sub">ADAM-500 / 4000 / 4100</div></div>
           </div>
+        </div>
+        <!-- Wiring Topology (Ethernet only) -->
+        <div class="sub-chips" id="wiring-sub">
+          <span class="sub-label">Wiring Topology</span>
+          <div class="sub-row">
+            <div class="sub-chip" data-wiring="star">⭐ Star / Direct</div>
+            <div class="sub-chip" data-wiring="daisy">🔗 Daisy Chain</div>
+          </div>
+        </div>
+        <!-- Protocol (context-aware) -->
+        <div class="sub-chips" id="proto-sub">
+          <span class="sub-label">Protocol</span>
+          <div class="sub-row" id="proto-chips-row"></div>
         </div>
       </div>
     </div>
@@ -223,8 +214,6 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
           <div class="io-chip" data-io="hasDO">Digital Out</div>
           <div class="io-chip" data-io="hasRelay">Relay Out</div>
         </div>
-
-        <!-- AI sub-chips -->
         <div class="sub-chips" id="ai-sub">
           <span class="sub-label">Signal type</span>
           <div class="sub-row">
@@ -233,8 +222,6 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
             <div class="sub-chip" data-subtype="rtd">📏 RTD</div>
           </div>
         </div>
-
-        <!-- AO sub-chips -->
         <div class="sub-chips" id="ao-sub">
           <span class="sub-label">Output signal type</span>
           <div class="sub-row">
@@ -242,8 +229,6 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
             <div class="sub-chip" data-subtype="aoCurrent">〜 Current Out</div>
           </div>
         </div>
-
-        <!-- DI sub-chips -->
         <div class="sub-chips" id="di-sub">
           <span class="sub-label">Input driver type</span>
           <div class="sub-row">
@@ -251,8 +236,6 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
             <div class="sub-chip" data-subtype="diSource">▲ Source (PNP)</div>
           </div>
         </div>
-
-        <!-- DO sub-chips -->
         <div class="sub-chips" id="do-sub">
           <span class="sub-label">Output driver type</span>
           <div class="sub-row">
@@ -260,8 +243,6 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
             <div class="sub-chip" data-subtype="doSource">▲ Source</div>
           </div>
         </div>
-
-        <!-- Relay sub-chips -->
         <div class="sub-chips" id="relay-sub">
           <span class="sub-label">Contact form</span>
           <div class="sub-row">
@@ -283,31 +264,13 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
         <div class="adv-group" id="grp-cloud">
           <div class="adv-group-label" onclick="toggleGrp('grp-cloud')">☁️ Cloud &amp; IoT<span class="cnt" id="cnt-cloud"></span><span class="arrow">▼</span></div>
           <div class="adv-group-body">
-            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="mqtt"><span class="adv-text">📡 MQTT</span></label>
-            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="azure"><span class="adv-text">☁️ Azure IoT Hub</span></label>
-            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="restful"><span class="adv-text">🌍 RESTful Web API</span></label>
-            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="snmp"><span class="adv-text">📊 SNMP</span></label>
-          </div>
-        </div>
-        <div class="adv-group" id="grp-wiring">
-          <div class="adv-group-label" onclick="toggleGrp('grp-wiring')">🔗 Wiring<span class="cnt" id="cnt-wiring"></span><span class="arrow">▼</span></div>
-          <div class="adv-group-body">
-            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="daisy"><span class="adv-text">🔗 Daisy Chain</span></label>
-          </div>
-        </div>
-        <div class="adv-group" id="grp-protocol">
-          <div class="adv-group-label" onclick="toggleGrp('grp-protocol')">⚙️ Protocol<span class="cnt" id="cnt-protocol"></span><span class="arrow">▼</span></div>
-          <div class="adv-group-body">
-            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="modbusTCP"><span class="adv-text">⚙️ Modbus/TCP</span></label>
-            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="modbusRTU"><span class="adv-text">⚙️ Modbus/RTU</span></label>
-            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="profinet"><span class="adv-text">🔵 PROFINET</span></label>
+            <div class="fchip-row" id="fchips-cloud"></div>
           </div>
         </div>
         <div class="adv-group" id="grp-env">
           <div class="adv-group-label" onclick="toggleGrp('grp-env')">🏭 Environment<span class="cnt" id="cnt-env"></span><span class="arrow">▼</span></div>
           <div class="adv-group-body">
-            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="ruggedized"><span class="adv-text">🏭 Ruggedized (wide temp -40~85°C)</span></label>
-            <label class="adv-item"><input type="checkbox" class="adv-check" data-fid="ip67"><span class="adv-text">💧 IP67 (outdoor / waterproof)</span></label>
+            <div class="fchip-row" id="fchips-env"></div>
           </div>
         </div>
       </div>
@@ -348,7 +311,7 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
     </div>
     <div class="modal-body" id="modal-body"></div>
     <div class="modal-footer">
-      <span>Click outside or ✕ to close</span>
+      <span>Click outside or Esc to close</span>
       <a id="m-link" href="#" target="_blank">Search on Advantech.com ↗</a>
     </div>
   </div>
@@ -356,160 +319,193 @@ header{background:var(--navy-dk);color:#fff;padding:0 28px;height:52px;display:f
 
 <script>
 const P=[
-{"series": "ADAM-500", "ioType": "AI/O", "model": "ADAM-518-A", "desc": "24-ch RS-485 Thermocouple Input Module", "ai_res": "16-bit", "ai_rate": "10 / 100 SPS (total)", "ai_ch": "24 x TC", "ai_tc": "J, K, T, E, N, R, S, B", "ai_curr": null, "ai_volt": null, "ai_acc": "±0.5°C @ 25°C", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-500", "ioType": "AI/O", "model": "ADAM-518E-A", "desc": "24-ch Ethernet Thermocouple Input Module with Daisy Chain & GCL", "ai_res": "16-bit", "ai_rate": "10 / 100 / 160 SPS (total)", "ai_ch": "24 x TC", "ai_tc": "J, K, T, E, N, R, S, B", "ai_curr": null, "ai_volt": null, "ai_acc": "±0.5°C @ 25°C", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100 Base-T (Daisy Chain, Auto-bypass)", "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4015-F", "desc": "6-ch RTD Module with Modbus", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "6 x RTD", "ai_tc": "Pt 100, Pt 1000, Balco 500, Ni 508, Ni 518, BA1", "ai_curr": null, "ai_volt": null, "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "0.9 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4017+-F", "desc": "8-ch Analog Input Module with Modbus", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "8 x AI", "ai_tc": "V, A", "ai_curr": "0 ~ 20 mA, 4 ~ 20 mA,  ±20 mA", "ai_volt": "±150 mV, ±500 mV, ±1 V, ±5 V, ±10 V, 0~150 mV, 0~500 mV, 0~1 V, 0~5 V, 0~10 V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4017-F", "desc": "8-ch Analog Input Module", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "8 x AI", "ai_tc": "V, A", "ai_curr": "0~20mA, ±20 mA", "ai_volt": "±150 mV, ±500 mV, ±1 V, ±5 V, ±10 V, 0~150 mV, 0~500 mV, 0~1 V, 0~5 V, 0~10 V", "ai_acc": "±0.1% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": false, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4018+-F", "desc": "8-ch Thermocouple Input Module with Modbus", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "8 x AI/TC", "ai_tc": "mA, Thermocouple:  J, K, T, E, R, S, B", "ai_curr": "4 ~ 20 mA,  ±20 mA", "ai_volt": null, "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4019+-F", "desc": "8-ch Universal Analog Input Module with Modbus", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "8 x AI/TC", "ai_tc": "mV, V, mA, Thermocouple:  J, K, T, E, R, S, B, N", "ai_curr": "0~20mA, 4 ~ 20 mA,  ±20 mA", "ai_volt": "±100 mV, ±500 mV,±1 V, ±2.5 V, ±5 V, ±10 V,  0~100 mV, 0~500 mV, 0~1 V, 0~2.5 V,  0~5 V, 0~10 V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4021-F", "desc": "1-ch Analog Output Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": "12-bit", "ao_ch": "1", "ao_volt_out": "0 ~ 10 V", "ao_curr_out": "0 ~ 20 mA,  4 ~ 20 mA", "ao_acc": "Voltage mode: ±0.2% or better Current mode: ±0.1% or better", "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.4 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": false, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": false, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": true, "aoCurrent": true},
-{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4024-C", "desc": "4-ch Analog Output Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": "12-bit & 16-bit", "ao_ch": "4", "ao_volt_out": "±10V, 0~10V ±5V, 0~5V", "ao_curr_out": "Source and Sink type 0～20mA/ 4～20mA", "ao_acc": "Voltage mode: ±0.1% or better Current mode: ±0.1% or better", "di_ch": "4", "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "3 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": true, "aoCurrent": true},
-{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4050-F", "desc": "16-ch Digital I/O Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "8", "do_ch": "8", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "0.2 W @ 24 VDC", "isolation": null, "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4051-C", "desc": "16-Ch Isolated DI Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "16", "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.25 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4053-F", "desc": "16-ch Digital Input Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "16", "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "0.7 W @ 24 VDC", "isolation": null, "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4055-C", "desc": "16-ch Isolated Digital I/O Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "8", "do_ch": "8", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.7 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4056SO-B", "desc": "12-ch Source Type Isolated Digital Output Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": "12", "do_type": "Source", "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "0.5 W @ 24 VDC", "isolation": "5,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": true, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "Relay Output", "model": "ADAM-4060-F", "desc": "4-ch Relay Output Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": "2 Form A, 2 Form C", "relay_rating": "0.6 A @ 125 VAC  0.3 A @ 250 VAC 2 A @ 30 VDC 0.6 A @ 110 VDC", "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.1 W @ 24 VDC", "isolation": null, "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "Relay Output", "model": "ADAM-4068-C", "desc": "8-ch Relay Output Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": "4 Form A, 4 Form C", "relay_rating": "0.5 A @ 120 VAC 0.25 A @ 240 VAC 1 A @ 30 VDC 0.3 A @ 110 VDC", "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.7 W @ 24 VDC", "isolation": null, "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "Relay Output", "model": "ADAM-4069-B", "desc": "8-ch Power Relay Output Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": "4 Form A, 4 Form C", "relay_rating": "5 A @ 250 VAC  5 A @ 30 VDC", "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "2.3 W @ 24 VDC", "isolation": null, "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4080-E", "desc": "2-ch Counter/Frequency Modules", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "2  Independent counters", "do_ch": "2", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4100", "ioType": "AI/O", "model": "ADAM-4115-C", "desc": "Robust 6-Ch RTD Input Module", "ai_res": "16-bit", "ai_rate": "10 or 100  samples/second (total)", "ai_ch": "6 x RTD", "ai_tc": "Pt 100, Pt 1000, Balco 500, Ni 518", "ai_curr": null, "ai_volt": null, "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 48 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-40 ~ 85°C (-40 ~ 185°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": false, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": true, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4100", "ioType": "AI/O", "model": "ADAM-4117-C", "desc": "Robust 8-ch Analog Input Module with Modbus", "ai_res": "16-bit", "ai_rate": "10 or 100  samples/second (total)", "ai_ch": "8 x AI", "ai_tc": "V, A", "ai_curr": "0 ~ 20mA , 4 ~ 20mA , ±20mA", "ai_volt": "0 ~ 150mV, 0 ~ 500mV, 0 ~ 1V, 0 ~ 5V, 0 ~ 10V, 0 ~ 15V, ±150 mV, ±500 mV, ±1V, ±5 V, ±10 V, ±15V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 48 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-40 ~ 85°C (-40 ~ 185°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": true, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4100", "ioType": "AI/O", "model": "ADAM-4118-C", "desc": "Robust 8-ch Thermocouple Input Module with Modbus", "ai_res": "16-bit", "ai_rate": "10 or 100  samples/second (total)", "ai_ch": "8 x AI/TC", "ai_tc": "V, A, Thermocouple:  J, K, T, E, R, S, B,N", "ai_curr": "0 ~ 20mA , 4 ~ 20mA , ±20mA", "ai_volt": "±15 mV, ±50 mV, ±100 mV, ±500 mV, ±1 V, ±2.5 V,0~15 mV, 0~50 mV, 0~100 mV, 0~500 mV, 0~1 V, 0~2.5 V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 48 VDC", "power_cons": "0.5W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-40 ~ 85°C (-40 ~ 185°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": true, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4100", "ioType": "DI/O", "model": "ADAM-4150-C", "desc": "Robust 15-ch Digital I/O Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "7", "do_ch": "8", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 48 VDC", "power_cons": "0.7 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-40 ~ 85°C (-40 ~ 185°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": true, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-4100", "ioType": "Relay Output", "model": "ADAM-4168-C", "desc": "Robust 8-ch Relay Output Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": "8 Form A", "relay_rating": "0.5 A @ 120 VAC 0.25 A @ 240 VAC 1 A @ 30 VDC 0.3 A @ 110 VDC", "lan": null, "power_in": "10 ~ 48 VDC", "power_cons": "1.8 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-40 ~ 85°C (-40 ~ 185°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": true, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6000", "ioType": "AI/O", "model": "ADAM-6015-DE", "desc": "7-ch Isolated RTD Input Modbus TCP Module", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "7 x RTD", "ai_tc": "Pt 100, Pt 1000, Balco 500, Ni 518", "ai_curr": null, "ai_volt": null, "ai_acc": "±0.1 % or better High speed mode:±0.5% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2.5 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": false, "restful": true, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6000", "ioType": "AI/O", "model": "ADAM-6017-D", "desc": "8-ch Isolated Analog Input Modbus TCP Module with 2-ch DO", "ai_res": "16-bit", "ai_rate": "10 or 100 or 250 sample/ second (total)", "ai_ch": "8 x AI", "ai_tc": "V, A", "ai_curr": "0 ~ 20mA , 4 ~ 20mA , ±20mA", "ai_volt": "0 ~ 150mV, 0 ~ 500mV, 0 ~ 1V, 0 ~ 5V, 0 ~ 10V, ±150mV, ±500mV , ±1V, ±5V, ±10V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": "2", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2.7 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6000", "ioType": "AI/O", "model": "ADAM-6018+-D", "desc": "8-ch Isolated Thermocouple Input Module", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "8 x TC", "ai_tc": "Thermocouple:  J, K, T, E, R, S, B", "ai_curr": null, "ai_volt": null, "ai_acc": "@25°C Type J,K,E,R,S: ±0.1% FSR Max Type B: ±0.15% FSR Max Type T: ±0.2% FSR Max", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "1 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6000", "ioType": "AI/O", "model": "ADAM-6022-A1E", "desc": "Ethernet-based Dual-loop PID Controller", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "6 x AI", "ai_tc": "V, A", "ai_curr": "4 ~ 20 mA, 0 ~ 20 mA", "ai_volt": "±10 VDC", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": "12-bit", "ao_ch": "2", "ao_volt_out": "0 ~ 10 V", "ao_curr_out": "0 ~ 20 mA,  4 ~ 20 mA", "ao_acc": "±0.1% of FSR", "di_ch": "2", "do_ch": "2", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "4 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 50°C(14 ~ 122° F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": false, "restful": true, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": true, "aoCurrent": true},
-{"series": "ADAM-6000", "ioType": "AI/O", "model": "ADAM-6024-D", "desc": "12-ch Isolated Universal Input/Output Modbus TCP Module", "ai_res": "16-bit", "ai_rate": "10 or 100 or 250 sample/ second (total)", "ai_ch": "6 x AI", "ai_tc": "V, A", "ai_curr": "4 ~ 20 mA, 0 ~ 20 mA", "ai_volt": "±10 VDC", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": "12-bit 16-bit", "ao_ch": "2", "ao_volt_out": "0 ~ 10 V", "ao_curr_out": "0 ~ 20 mA,  4 ~ 20 mA", "ao_acc": "±0.1% of FSR", "di_ch": "2", "do_ch": "2", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "4 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 50°C(14 ~ 122° F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": true, "aoCurrent": true},
-{"series": "ADAM-6000", "ioType": "DI/O", "model": "ADAM-6050-D1", "desc": "18-ch Isolated Digital I/O Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "12", "do_ch": "6", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-20 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6000", "ioType": "DI/O", "model": "ADAM-6051-D", "desc": "14-ch Isolated Digital I/O Modbus TCP Module with 2-ch Counter", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "12", "do_ch": "2", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-20 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6000", "ioType": "DI/O", "model": "ADAM-6052-D", "desc": "16-ch Source-type Isolated Digital I/O Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "8", "do_ch": "8", "do_type": "Source", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-20 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": true, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6000", "ioType": "Relay Output", "model": "ADAM-6060-D1", "desc": "6-ch Digital Input and 6-ch Relay Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "6", "do_ch": null, "do_type": null, "relay_ch": "6 Form A", "relay_rating": "0.5 A @ 120 VAC 1 A @ 30 VDC", "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6000", "ioType": "Relay Output", "model": "ADAM-6066-D", "desc": "6-ch Digital Input and 6-ch Power Relay Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "6", "do_ch": null, "do_type": null, "relay_ch": "6 Form A", "relay_rating": "5 A @ 250 VAC  3 A @ 30 VDC", "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2.5 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6200", "ioType": "AI/O", "model": "ADAM-6217-B", "desc": "8-ch Isolated Analog Input Modbus TCP Module", "ai_res": "16-bit", "ai_rate": "10 or 100 or 250 sample/ second (total)", "ai_ch": "8 x AI", "ai_tc": "V, A", "ai_curr": "0 ~ 20mA , 4 ~ 20mA , ±20mA", "ai_volt": "±150 mV, ±500 mV, ±1 V, ±5 V, ±10 V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "3.5 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6200", "ioType": "AI/O", "model": "ADAM-6224-B", "desc": "4-ch Isolated Analog Output Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": "16-bit", "ao_ch": "4", "ao_volt_out": "0 ~ 5 V, 0 ~ 10 V, ± 5 V, ± 10 V", "ao_curr_out": "0 ~ 20 mA,  4 ~ 20 mA", "ao_acc": "±0.3% of FSR (Voltage) ±0.5% of FSR (Current)", "di_ch": "4", "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "6W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": true, "aoCurrent": true},
-{"series": "ADAM-6200", "ioType": "DI/O", "model": "ADAM-6250-B", "desc": "15-ch Isolated Digital I/O Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "8", "do_ch": "7", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "3 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6200", "ioType": "DI/O", "model": "ADAM-6251-B", "desc": "16-ch Isolated Digital Input Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "16", "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "2.7 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6200", "ioType": "DI/O", "model": "ADAM-6256-B", "desc": "16-ch Isolated Digital Output Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": "16", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "3.2 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6200", "ioType": "Relay Output", "model": "ADAM-6260-B", "desc": "6-ch Relay Output Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": "5 Form C, 1 Form A", "relay_rating": "5 A @ 250 VAC  5 A @ 30 VDC", "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "4.5 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-6200", "ioType": "Relay Output", "model": "ADAM-6266-B", "desc": "4-ch Relay Output Modbus TCP Module with 4-ch DI", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "4", "do_ch": null, "do_type": null, "relay_ch": "4 Form C", "relay_rating": "5 A @ 250 VAC  5 A @ 30 VDC", "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "4.2 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false},
-{"series": "ADAM-200", "ioType": "DI/O", "model": "ADAM-250PN-A", "desc": "16 DI/O IP67 M12 PROFINET/Modbus/ SNMP Remote I/O Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "Max.16 (Configurable DI or DO)", "do_ch": "Max.16 (Configurable DI or DO)", "do_type": "Source", "relay_ch": null, "relay_rating": null, "lan": "100Base-T(X) (Daisy Chain and integrated switch)", "power_in": "Unregulated 24 VDC ±20%", "power_cons": "6W @ 24 VDC", "isolation": "750 VDC between US & UA, 1,500 VDC (Ethernet)", "ip": "IP67", "op_temp": "-40 ~ 60 °C (-40 ~ 140 °F)", "ascii": false, "modbusRTU": false, "modbusTCP": true, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": true, "CE": true, "FCC": true, "UL": false, "ethernet": true, "rs485": false, "daisy": true, "p2p": false, "gcl": false, "ruggedized": false, "ip67": true, "doSource": true, "doSink": false, "aoVoltage": false, "aoCurrent": false}
+{"series": "ADAM-500", "ioType": "AI/O", "model": "ADAM-518-A", "desc": "24-ch RS-485 Thermocouple Input Module", "ai_res": "16-bit", "ai_rate": "10 / 100 SPS (total)", "ai_ch": "24 x TC", "ai_tc": "J, K, T, E, N, R, S, B", "ai_curr": null, "ai_volt": null, "ai_acc": "±0.5°C @ 25°C", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": true, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-500", "ioType": "AI/O", "model": "ADAM-518E-A", "desc": "24-ch Ethernet Thermocouple Input Module with Daisy Chain & GCL", "ai_res": "16-bit", "ai_rate": "10 / 100 / 160 SPS (total)", "ai_ch": "24 x TC", "ai_tc": "J, K, T, E, N, R, S, B", "ai_curr": null, "ai_volt": null, "ai_acc": "±0.5°C @ 25°C", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100 Base-T (Daisy Chain, Auto-bypass)", "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": true, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4015-F", "desc": "6-ch RTD Module with Modbus", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "6 x RTD", "ai_tc": "Pt 100, Pt 1000, Balco 500, Ni 508, Ni 518, BA1", "ai_curr": null, "ai_volt": null, "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "0.9 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": true, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4017+-F", "desc": "8-ch Analog Input Module with Modbus", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "8 x AI", "ai_tc": "V, A", "ai_curr": "0 ~ 20 mA, 4 ~ 20 mA,  ±20 mA", "ai_volt": "±150 mV, ±500 mV, ±1 V, ±5 V, ±10 V, 0~150 mV, 0~500 mV, 0~1 V, 0~5 V, 0~10 V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": true, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4017-F", "desc": "8-ch Analog Input Module", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "8 x AI", "ai_tc": "V, A", "ai_curr": "0~20mA, ±20 mA", "ai_volt": "±150 mV, ±500 mV, ±1 V, ±5 V, ±10 V, 0~150 mV, 0~500 mV, 0~1 V, 0~5 V, 0~10 V", "ai_acc": "±0.1% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": false, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": true, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4018+-F", "desc": "8-ch Thermocouple Input Module with Modbus", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "8 x AI/TC", "ai_tc": "mA, Thermocouple:  J, K, T, E, R, S, B", "ai_curr": "4 ~ 20 mA,  ±20 mA", "ai_volt": null, "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": true, "aiTC": true, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4019+-F", "desc": "8-ch Universal Analog Input Module with Modbus", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "8 x AI/TC", "ai_tc": "mV, V, mA, Thermocouple:  J, K, T, E, R, S, B, N", "ai_curr": "0~20mA, 4 ~ 20 mA,  ±20 mA", "ai_volt": "±100 mV, ±500 mV,±1 V, ±2.5 V, ±5 V, ±10 V,  0~100 mV, 0~500 mV, 0~1 V, 0~2.5 V,  0~5 V, 0~10 V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": true, "aiTC": true, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4021-F", "desc": "1-ch Analog Output Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": "12-bit", "ao_ch": "1", "ao_volt_out": "0 ~ 10 V", "ao_curr_out": "0 ~ 20 mA,  4 ~ 20 mA", "ao_acc": "Voltage mode: ±0.2% or better Current mode: ±0.1% or better", "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.4 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": false, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": false, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": true, "aoCurrent": true, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-4000", "ioType": "AI/O", "model": "ADAM-4024-C", "desc": "4-ch Analog Output Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": "12-bit & 16-bit", "ao_ch": "4", "ao_volt_out": "±10V, 0~10V ±5V, 0~5V", "ao_curr_out": "Source and Sink type 0～20mA/ 4～20mA", "ao_acc": "Voltage mode: ±0.1% or better Current mode: ±0.1% or better", "di_ch": "4", "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "3 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": true, "aoCurrent": true, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4050-F", "desc": "16-ch Digital I/O Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "8", "do_ch": "8", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "0.2 W @ 24 VDC", "isolation": null, "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4051-C", "desc": "16-Ch Isolated DI Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "16", "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.25 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4053-F", "desc": "16-ch Digital Input Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "16", "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "0.7 W @ 24 VDC", "isolation": null, "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4055-C", "desc": "16-ch Isolated Digital I/O Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "8", "do_ch": "8", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.7 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4056SO-B", "desc": "12-ch Source Type Isolated Digital Output Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": "12", "do_type": "Source", "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "0.5 W @ 24 VDC", "isolation": "5,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": true, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-4000", "ioType": "Relay Output", "model": "ADAM-4060-F", "desc": "4-ch Relay Output Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": "2 Form A, 2 Form C", "relay_rating": "0.6 A @ 125 VAC  0.3 A @ 250 VAC 2 A @ 30 VDC 0.6 A @ 110 VDC", "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.1 W @ 24 VDC", "isolation": null, "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": true, "relayFormC": true, "diSink": false, "diSource": false},
+{"series": "ADAM-4000", "ioType": "Relay Output", "model": "ADAM-4068-C", "desc": "8-ch Relay Output Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": "4 Form A, 4 Form C", "relay_rating": "0.5 A @ 120 VAC 0.25 A @ 240 VAC 1 A @ 30 VDC 0.3 A @ 110 VDC", "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "1.7 W @ 24 VDC", "isolation": null, "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": true, "relayFormC": true, "diSink": false, "diSource": false},
+{"series": "ADAM-4000", "ioType": "Relay Output", "model": "ADAM-4069-B", "desc": "8-ch Power Relay Output Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": "4 Form A, 4 Form C", "relay_rating": "5 A @ 250 VAC  5 A @ 30 VDC", "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "2.3 W @ 24 VDC", "isolation": null, "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": true, "relayFormC": true, "diSink": false, "diSource": false},
+{"series": "ADAM-4000", "ioType": "DI/O", "model": "ADAM-4080-E", "desc": "2-ch Counter/Frequency Modules", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "2  Independent counters", "do_ch": "2", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-4100", "ioType": "AI/O", "model": "ADAM-4115-C", "desc": "Robust 6-Ch RTD Input Module", "ai_res": "16-bit", "ai_rate": "10 or 100  samples/second (total)", "ai_ch": "6 x RTD", "ai_tc": "Pt 100, Pt 1000, Balco 500, Ni 518", "ai_curr": null, "ai_volt": null, "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 48 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-40 ~ 85°C (-40 ~ 185°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": false, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": true, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": true, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-4100", "ioType": "AI/O", "model": "ADAM-4117-C", "desc": "Robust 8-ch Analog Input Module with Modbus", "ai_res": "16-bit", "ai_rate": "10 or 100  samples/second (total)", "ai_ch": "8 x AI", "ai_tc": "V, A", "ai_curr": "0 ~ 20mA , 4 ~ 20mA , ±20mA", "ai_volt": "0 ~ 150mV, 0 ~ 500mV, 0 ~ 1V, 0 ~ 5V, 0 ~ 10V, 0 ~ 15V, ±150 mV, ±500 mV, ±1V, ±5 V, ±10 V, ±15V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 48 VDC", "power_cons": "1.2 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-40 ~ 85°C (-40 ~ 185°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": true, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": true, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-4100", "ioType": "AI/O", "model": "ADAM-4118-C", "desc": "Robust 8-ch Thermocouple Input Module with Modbus", "ai_res": "16-bit", "ai_rate": "10 or 100  samples/second (total)", "ai_ch": "8 x AI/TC", "ai_tc": "V, A, Thermocouple:  J, K, T, E, R, S, B,N", "ai_curr": "0 ~ 20mA , 4 ~ 20mA , ±20mA", "ai_volt": "±15 mV, ±50 mV, ±100 mV, ±500 mV, ±1 V, ±2.5 V,0~15 mV, 0~50 mV, 0~100 mV, 0~500 mV, 0~1 V, 0~2.5 V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 48 VDC", "power_cons": "0.5W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-40 ~ 85°C (-40 ~ 185°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": false, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": true, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": true, "aiTC": true, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-4100", "ioType": "DI/O", "model": "ADAM-4150-C", "desc": "Robust 15-ch Digital I/O Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "7", "do_ch": "8", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": null, "power_in": "10 ~ 48 VDC", "power_cons": "0.7 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-40 ~ 85°C (-40 ~ 185°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": true, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-4100", "ioType": "Relay Output", "model": "ADAM-4168-C", "desc": "Robust 8-ch Relay Output Module with Modbus", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": "8 Form A", "relay_rating": "0.5 A @ 120 VAC 0.25 A @ 240 VAC 1 A @ 30 VDC 0.3 A @ 110 VDC", "lan": null, "power_in": "10 ~ 48 VDC", "power_cons": "1.8 W @ 24 VDC", "isolation": "3,000 VDC", "ip": "IP40", "op_temp": "-40 ~ 85°C (-40 ~ 185°F)", "ascii": true, "modbusRTU": true, "modbusTCP": false, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": false, "rs485": true, "daisy": false, "p2p": false, "gcl": false, "ruggedized": true, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": true, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-6000", "ioType": "AI/O", "model": "ADAM-6015-DE", "desc": "7-ch Isolated RTD Input Modbus TCP Module", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "7 x RTD", "ai_tc": "Pt 100, Pt 1000, Balco 500, Ni 518", "ai_curr": null, "ai_volt": null, "ai_acc": "±0.1 % or better High speed mode:±0.5% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2.5 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": false, "restful": true, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": true, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-6000", "ioType": "AI/O", "model": "ADAM-6017-D", "desc": "8-ch Isolated Analog Input Modbus TCP Module with 2-ch DO", "ai_res": "16-bit", "ai_rate": "10 or 100 or 250 sample/ second (total)", "ai_ch": "8 x AI", "ai_tc": "V, A", "ai_curr": "0 ~ 20mA , 4 ~ 20mA , ±20mA", "ai_volt": "0 ~ 150mV, 0 ~ 500mV, 0 ~ 1V, 0 ~ 5V, 0 ~ 10V, ±150mV, ±500mV , ±1V, ±5V, ±10V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": "2", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2.7 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": true, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-6000", "ioType": "AI/O", "model": "ADAM-6018+-D", "desc": "8-ch Isolated Thermocouple Input Module", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "8 x TC", "ai_tc": "Thermocouple:  J, K, T, E, R, S, B", "ai_curr": null, "ai_volt": null, "ai_acc": "@25°C Type J,K,E,R,S: ±0.1% FSR Max Type B: ±0.15% FSR Max Type T: ±0.2% FSR Max", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "1 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": true, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-6000", "ioType": "AI/O", "model": "ADAM-6022-A1E", "desc": "Ethernet-based Dual-loop PID Controller", "ai_res": "16-bit", "ai_rate": "10  sample/ second (total)", "ai_ch": "6 x AI", "ai_tc": "V, A", "ai_curr": "4 ~ 20 mA, 0 ~ 20 mA", "ai_volt": "±10 VDC", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": "12-bit", "ao_ch": "2", "ao_volt_out": "0 ~ 10 V", "ao_curr_out": "0 ~ 20 mA,  4 ~ 20 mA", "ao_acc": "±0.1% of FSR", "di_ch": "2", "do_ch": "2", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "4 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 50°C(14 ~ 122° F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": false, "restful": true, "mqtt": false, "snmp": false, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": false, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": true, "aoCurrent": true, "opcUA": false, "aiVoltCurr": true, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6000", "ioType": "AI/O", "model": "ADAM-6024-D", "desc": "12-ch Isolated Universal Input/Output Modbus TCP Module", "ai_res": "16-bit", "ai_rate": "10 or 100 or 250 sample/ second (total)", "ai_ch": "6 x AI", "ai_tc": "V, A", "ai_curr": "4 ~ 20 mA, 0 ~ 20 mA", "ai_volt": "±10 VDC", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": "12-bit 16-bit", "ao_ch": "2", "ao_volt_out": "0 ~ 10 V", "ao_curr_out": "0 ~ 20 mA,  4 ~ 20 mA", "ao_acc": "±0.1% of FSR", "di_ch": "2", "do_ch": "2", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "4 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 50°C(14 ~ 122° F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": true, "aoCurrent": true, "opcUA": false, "aiVoltCurr": true, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6000", "ioType": "DI/O", "model": "ADAM-6050-D1", "desc": "18-ch Isolated Digital I/O Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "12", "do_ch": "6", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-20 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6000", "ioType": "DI/O", "model": "ADAM-6051-D", "desc": "14-ch Isolated Digital I/O Modbus TCP Module with 2-ch Counter", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "12", "do_ch": "2", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-20 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6000", "ioType": "DI/O", "model": "ADAM-6052-D", "desc": "16-ch Source-type Isolated Digital I/O Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "8", "do_ch": "8", "do_type": "Source", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-20 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": true, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": true, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6000", "ioType": "Relay Output", "model": "ADAM-6060-D1", "desc": "6-ch Digital Input and 6-ch Relay Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "6", "do_ch": null, "do_type": null, "relay_ch": "6 Form A", "relay_rating": "0.5 A @ 120 VAC 1 A @ 30 VDC", "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": true, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6000", "ioType": "Relay Output", "model": "ADAM-6066-D", "desc": "6-ch Digital Input and 6-ch Power Relay Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "6", "do_ch": null, "do_type": null, "relay_ch": "6 Form A", "relay_rating": "5 A @ 250 VAC  3 A @ 30 VDC", "lan": "10/100Base-T(X)", "power_in": "10 ~ 30 VDC", "power_cons": "2.5 W @ 24 VDC", "isolation": "2,000 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for D version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": false, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": true, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6200", "ioType": "AI/O", "model": "ADAM-6217-B", "desc": "8-ch Isolated Analog Input Modbus TCP Module", "ai_res": "16-bit", "ai_rate": "10 or 100 or 250 sample/ second (total)", "ai_ch": "8 x AI", "ai_tc": "V, A", "ai_curr": "0 ~ 20mA , 4 ~ 20mA , ±20mA", "ai_volt": "±150 mV, ±500 mV, ±1 V, ±5 V, ±10 V", "ai_acc": "Voltage mode: ±0.1% or better Current mode: ±0.2% or better", "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "3.5 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": true, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-6200", "ioType": "AI/O", "model": "ADAM-6224-B", "desc": "4-ch Isolated Analog Output Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": "16-bit", "ao_ch": "4", "ao_volt_out": "0 ~ 5 V, 0 ~ 10 V, ± 5 V, ± 10 V", "ao_curr_out": "0 ~ 20 mA,  4 ~ 20 mA", "ao_acc": "±0.3% of FSR (Voltage) ±0.5% of FSR (Current)", "di_ch": "4", "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "6W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": true, "aoCurrent": true, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6200", "ioType": "DI/O", "model": "ADAM-6250-B", "desc": "15-ch Isolated Digital I/O Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "8", "do_ch": "7", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "3 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6200", "ioType": "DI/O", "model": "ADAM-6251-B", "desc": "16-ch Isolated Digital Input Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "16", "do_ch": null, "do_type": null, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "2.7 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6200", "ioType": "DI/O", "model": "ADAM-6256-B", "desc": "16-ch Isolated Digital Output Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": "16", "do_type": "Sink", "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "3.2 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": true, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": false, "diSource": false},
+{"series": "ADAM-6200", "ioType": "Relay Output", "model": "ADAM-6260-B", "desc": "6-ch Relay Output Modbus TCP Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": null, "do_ch": null, "do_type": null, "relay_ch": "5 Form C, 1 Form A", "relay_rating": "5 A @ 250 VAC  5 A @ 30 VDC", "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "4.5 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": true, "relayFormC": true, "diSink": false, "diSource": false},
+{"series": "ADAM-6200", "ioType": "Relay Output", "model": "ADAM-6266-B", "desc": "4-ch Relay Output Modbus TCP Module with 4-ch DI", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "4", "do_ch": null, "do_type": null, "relay_ch": "4 Form C", "relay_rating": "5 A @ 250 VAC  5 A @ 30 VDC", "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "4.2 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-10 ~ 70°C (14 ~ 158°F); -40 ~ 70°C (-40~158°F) for B version", "ascii": true, "modbusRTU": false, "modbusTCP": true, "azure": true, "restful": false, "mqtt": true, "snmp": true, "profinet": false, "CE": true, "FCC": true, "UL": true, "ethernet": true, "rs485": false, "daisy": true, "p2p": true, "gcl": true, "ruggedized": false, "ip67": false, "doSource": false, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": true, "diSink": true, "diSource": false},
+{"series": "ADAM-200", "ioType": "DI/O", "model": "ADAM-250PN-A", "desc": "16 DI/O IP67 M12 PROFINET/Modbus/ SNMP Remote I/O Module", "ai_res": null, "ai_rate": null, "ai_ch": null, "ai_tc": null, "ai_curr": null, "ai_volt": null, "ai_acc": null, "ao_res": null, "ao_ch": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "di_ch": "Max.16 (Configurable DI or DO)", "do_ch": "Max.16 (Configurable DI or DO)", "do_type": "Source", "relay_ch": null, "relay_rating": null, "lan": "100Base-T(X) (Daisy Chain and integrated switch)", "power_in": "Unregulated 24 VDC ±20%", "power_cons": "6W @ 24 VDC", "isolation": "750 VDC between US & UA, 1,500 VDC (Ethernet)", "ip": "IP67", "op_temp": "-40 ~ 60 °C (-40 ~ 140 °F)", "ascii": false, "modbusRTU": false, "modbusTCP": true, "azure": false, "restful": false, "mqtt": false, "snmp": false, "profinet": true, "CE": true, "FCC": true, "UL": false, "ethernet": true, "rs485": false, "daisy": true, "p2p": false, "gcl": false, "ruggedized": false, "ip67": true, "doSource": true, "doSink": false, "aoVoltage": false, "aoCurrent": false, "opcUA": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": true},
+{"series": "ADAM-6300", "ioType": "AI/O", "model": "ADAM-6315-A1", "desc": "8-ch RTD OPC UA Ethernet I/O Module", "ai_ch": "8 (differential)", "ai_res": "16-bit", "ai_rate": "10 (Normal) / 1024 (High Speed) sample/sec", "ai_tc": "Pt100, Pt1000, Balco500, Ni508, BA1", "ai_volt": null, "ai_curr": null, "ai_acc": "±0.1% or better; High speed: ±0.5% or better", "ao_ch": null, "ao_res": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "aoVoltage": false, "aoCurrent": false, "di_ch": "6", "do_ch": "8", "do_type": "Sink and Source", "doSink": true, "doSource": true, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "2.9 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-25 ~ 70°C (-13~158°F)", "ethernet": true, "rs485": false, "daisy": true, "ascii": true, "modbusRTU": false, "modbusTCP": true, "mqtt": false, "azure": false, "restful": false, "snmp": false, "profinet": false, "p2p": false, "gcl": false, "opcUA": true, "ruggedized": false, "ip67": false, "CE": true, "FCC": true, "UL": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": true, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6300", "ioType": "AI/O", "model": "ADAM-6317-A1", "desc": "8-ch Analog Input OPC UA Ethernet I/O Module", "ai_ch": "8 x AI", "ai_res": "16-bit", "ai_rate": "10 or 100 sample/sec", "ai_tc": "V, A", "ai_volt": "0~150mV, 0~500mV, 0~1V, 0~5V, 0~10V, ±150mV, ±500mV, ±1V, ±5V, ±10V", "ai_curr": "0~20mA, 4~20mA, ±20mA", "ai_acc": "Voltage: ±0.1% or better; Current: ±0.2% or better", "ao_ch": null, "ao_res": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "aoVoltage": false, "aoCurrent": false, "di_ch": "11", "do_ch": "10", "do_type": "Sink", "doSink": true, "doSource": false, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "2.9 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-25 ~ 70°C (-13~158°F)", "ethernet": true, "rs485": false, "daisy": true, "ascii": true, "modbusRTU": false, "modbusTCP": true, "mqtt": false, "azure": false, "restful": false, "snmp": false, "profinet": false, "p2p": false, "gcl": false, "opcUA": true, "ruggedized": false, "ip67": false, "CE": true, "FCC": true, "UL": false, "aiVoltCurr": true, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6300", "ioType": "DI/O", "model": "ADAM-6350-A1", "desc": "18-ch DI / 18-ch DO OPC UA Ethernet I/O Module", "ai_ch": null, "ai_res": null, "ai_rate": null, "ai_tc": null, "ai_volt": null, "ai_curr": null, "ai_acc": null, "ao_ch": null, "ao_res": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "aoVoltage": false, "aoCurrent": false, "di_ch": "18", "do_ch": "18", "do_type": "Sink", "doSink": true, "doSource": false, "relay_ch": null, "relay_rating": null, "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "2.8 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-25 ~ 70°C (-13~158°F)", "ethernet": true, "rs485": false, "daisy": true, "ascii": true, "modbusRTU": false, "modbusTCP": true, "mqtt": false, "azure": false, "restful": false, "snmp": false, "profinet": false, "p2p": false, "gcl": false, "opcUA": true, "ruggedized": false, "ip67": false, "CE": true, "FCC": true, "UL": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": false, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6300", "ioType": "Relay Output", "model": "ADAM-6360D-A1", "desc": "14-ch DI / 6-ch DO / 8-ch PhotoMOS Relay OPC UA Ethernet I/O Module", "ai_ch": null, "ai_res": null, "ai_rate": null, "ai_tc": null, "ai_volt": null, "ai_curr": null, "ai_acc": null, "ao_ch": null, "ao_res": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "aoVoltage": false, "aoCurrent": false, "di_ch": "14", "do_ch": "6", "do_type": "Sink", "doSink": true, "doSource": false, "relay_ch": "8 Form A (PhotoMOS SPST)", "relay_rating": "1 A @ 30 VDC (25°C), 0.7 A @ 30 VDC (70°C)", "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "2.8 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-25 ~ 70°C (-13~158°F)", "ethernet": true, "rs485": false, "daisy": true, "ascii": true, "modbusRTU": false, "modbusTCP": true, "mqtt": false, "azure": false, "restful": false, "snmp": false, "profinet": false, "p2p": false, "gcl": false, "opcUA": true, "ruggedized": false, "ip67": false, "CE": true, "FCC": true, "UL": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": true, "relayFormC": false, "diSink": true, "diSource": false},
+{"series": "ADAM-6300", "ioType": "Relay Output", "model": "ADAM-6366-A1", "desc": "18-ch DI / 6-ch DO / 6-ch Relay OPC UA Ethernet I/O Module", "ai_ch": null, "ai_res": null, "ai_rate": null, "ai_tc": null, "ai_volt": null, "ai_curr": null, "ai_acc": null, "ao_ch": null, "ao_res": null, "ao_volt_out": null, "ao_curr_out": null, "ao_acc": null, "aoVoltage": false, "aoCurrent": false, "di_ch": "18", "do_ch": "6", "do_type": "Sink", "doSink": true, "doSource": false, "relay_ch": "6 Form A", "relay_rating": "0.25 A @ 250 VAC, 2 A @ 30 VDC", "lan": "10/100Base-T(X) (Daisy Chain)", "power_in": "10 ~ 30 VDC", "power_cons": "2.8 W @ 24 VDC", "isolation": "2,500 VDC", "ip": "IP40", "op_temp": "-25 ~ 70°C (-13~158°F)", "ethernet": true, "rs485": false, "daisy": true, "ascii": true, "modbusRTU": false, "modbusTCP": true, "mqtt": false, "azure": false, "restful": false, "snmp": false, "profinet": false, "p2p": false, "gcl": false, "opcUA": true, "ruggedized": false, "ip67": false, "CE": true, "FCC": true, "UL": false, "aiVoltCurr": false, "aiTC": false, "aiRTD": false, "relayFormA": true, "relayFormC": false, "diSink": true, "diSource": false}
 ];
 
 
-// Compute derived fields at startup
-P.forEach(p=>{
-  p.aiVoltCurr = !!(p.ai_ch && (p.ai_volt || p.ai_curr || (p.ai_tc && /\bV\b|\bmV\b|\bA\b|\bmA\b/.test(p.ai_tc))));
-  p.aiTC       = !!(p.ai_ch && p.ai_tc && /\bJ\b|\bK\b|\bT\b|\bE\b|\bR\b|\bS\b|\bB\b|\bN\b|hermocouple/i.test(p.ai_tc));
-  p.aiRTD      = !!(p.ai_ch && p.ai_tc && /Pt\s*\d|Balco|Ni\s*\d|BA\d/i.test(p.ai_tc));
-  p.relayFormA = !!(p.relay_ch && /Form A/i.test(p.relay_ch));
-  p.relayFormC = !!(p.relay_ch && /Form C/i.test(p.relay_ch));
-  p.diSink     = p.di_ch !== null;
-  p.diSource   = p.model === 'ADAM-250PN-A';
-});
-
-const FEATS=[
-  {fid:'ethernet',  label:'🌐 Ethernet',   cls:'conn'},
-  {fid:'rs485',     label:'🔌 RS-485',     cls:'conn'},
-  {fid:'daisy',     label:'🔗 Daisy',      cls:'conn'},
-  {fid:'mqtt',      label:'📡 MQTT',       cls:'cloud'},
-  {fid:'azure',     label:'☁️ Azure',      cls:'cloud'},
-  {fid:'restful',   label:'🌍 RESTful',    cls:'cloud'},
-  {fid:'snmp',      label:'📊 SNMP',       cls:'cloud'},
-  {fid:'modbusTCP', label:'⚙️ Modbus/TCP', cls:'plc'},
-  {fid:'modbusRTU', label:'⚙️ Modbus/RTU', cls:'plc'},
-  {fid:'profinet',  label:'🔵 PROFINET',   cls:'plc'},
-  {fid:'ruggedized',label:'🏭 Rugged',     cls:'env'},
-  {fid:'ip67',      label:'💧 IP67',       cls:'env'},
-];
-const FEAT_MAP=Object.fromEntries(FEATS.map(f=>[f.fid,f]));
+const FEAT_MAP={
+  ethernet:{label:'Ethernet'},rs485:{label:'RS-485'},daisy:{label:'Daisy Chain'},
+  mqtt:{label:'MQTT'},azure:{label:'Azure IoT'},restful:{label:'RESTful'},snmp:{label:'SNMP'},
+  modbusTCP:{label:'Modbus/TCP'},modbusRTU:{label:'Modbus/RTU'},profinet:{label:'PROFINET'},
+  opcUA:{label:'OPC UA'},ascii:{label:'ASCII'},
+  ruggedized:{label:'Rugged'},ip67:{label:'IP67'},
+};
 const FEAT_GROUPS=[
-  {label:'Network',  fids:['ethernet','rs485','daisy'],         cls:'conn'},
-  {label:'Cloud',    fids:['mqtt','azure','restful','snmp'],    cls:'cloud'},
-  {label:'Protocol', fids:['modbusTCP','modbusRTU','profinet'], cls:'plc'},
-  {label:'Env',      fids:['ruggedized','ip67'],                cls:'env'},
+  {label:'Network',  fids:['ethernet','rs485','daisy']},
+  {label:'Cloud',    fids:['mqtt','azure','restful','snmp']},
+  {label:'Protocol', fids:['modbusTCP','modbusRTU','profinet','opcUA','ascii']},
+  {label:'Env',      fids:['ruggedized','ip67']},
 ];
+// Protocol chips by comm type
+const PROTO_BY_COMM={
+  ethernet:['modbusTCP','opcUA','profinet'],
+  rs485:['modbusRTU','ascii'],
+};
+// Step 3 filter chip groups
+const STEP3_GROUPS={
+  'grp-cloud': {cnt:'cnt-cloud', chips:'fchips-cloud', fids:['mqtt','azure','restful','snmp']},
+  'grp-env':   {cnt:'cnt-env',   chips:'fchips-env',   fids:['ruggedized','ip67']},
+};
+
 const IO_FN={
-  hasAI:p=>p.ai_ch!==null, hasAO:p=>p.ao_ch!==null,
-  hasDI:p=>p.di_ch!==null, hasDO:p=>p.do_ch!==null, hasRelay:p=>p.relay_ch!==null
+  hasAI:p=>p.ai_ch!==null,hasAO:p=>p.ao_ch!==null,
+  hasDI:p=>p.di_ch!==null,hasDO:p=>p.do_ch!==null,hasRelay:p=>p.relay_ch!==null
 };
 const IO_LABEL={hasAI:'Analog In',hasAO:'Analog Out',hasDI:'Digital In',hasDO:'Digital Out',hasRelay:'Relay Out'};
 
 const state={
-  comm:null, io:new Set(), features:new Set(),
-  aiType:null, aoType:null, diType:null, doType:null, relayType:null
+  comm:null,io:new Set(),features:new Set(),
+  wiring:null,
+  aiType:null,aoType:null,diType:null,doType:null,relayType:null
 };
 
-// Step 1
+// Build step 3 filter chips
+function buildStep3Chips(){
+  for(const[grpId,cfg] of Object.entries(STEP3_GROUPS)){
+    const row=document.getElementById(cfg.chips);
+    row.innerHTML=cfg.fids.map(fid=>`<div class="fchip" data-fid="${fid}">${FEAT_MAP[fid].label}</div>`).join('');
+    row.querySelectorAll('.fchip').forEach(chip=>{
+      chip.addEventListener('click',()=>{
+        const fid=chip.dataset.fid;
+        if(state.features.has(fid)){state.features.delete(fid);chip.classList.remove('on');}
+        else{state.features.add(fid);chip.classList.add('on');}
+        updateGrpCounts();render();
+      });
+    });
+  }
+}
+buildStep3Chips();
+
+// Step 1 — Communication
 document.querySelectorAll('.comm-tile').forEach(tile=>{
   tile.addEventListener('click',()=>{
     const val=tile.dataset.comm;
     if(state.comm===val){state.comm=null;tile.classList.remove('on');}
-    else{document.querySelectorAll('.comm-tile').forEach(t=>t.classList.remove('on'));state.comm=val;tile.classList.add('on');}
-    if(!state.comm){state.io.clear();state.features.clear();resetSubTypes();syncIO();syncAdv();}
-    updateSteps();render();
+    else{
+      document.querySelectorAll('.comm-tile').forEach(t=>t.classList.remove('on'));
+      clearProtoFeatures();
+      state.comm=val;tile.classList.add('on');
+    }
+    if(!state.comm){state.io.clear();state.features.clear();state.wiring=null;resetSubTypes();syncIO();syncStep3Chips();}
+    updateWiringVisibility();updateProtoSub();updateSteps();render();
   });
 });
 
-// Step 2 – I/O chips
+// Wiring sub-chips (single-select, Ethernet only)
+document.querySelectorAll('#wiring-sub .sub-chip').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    const t=chip.dataset.wiring;
+    if(state.wiring===t){state.wiring=null;chip.classList.remove('on');}
+    else{state.wiring=t;document.querySelectorAll('#wiring-sub .sub-chip').forEach(c=>c.classList.remove('on'));chip.classList.add('on');}
+    render();
+  });
+});
+function updateWiringVisibility(){
+  document.getElementById('wiring-sub').classList.toggle('visible',state.comm==='ethernet');
+  if(state.comm!=='ethernet'){state.wiring=null;document.querySelectorAll('#wiring-sub .sub-chip').forEach(c=>c.classList.remove('on'));}
+}
+
+// Protocol sub in Step 1 (context-aware, multi-select)
+function updateProtoSub(){
+  const sub=document.getElementById('proto-sub');
+  const row=document.getElementById('proto-chips-row');
+  if(!state.comm){sub.classList.remove('visible');return;}
+  const fids=PROTO_BY_COMM[state.comm]||[];
+  if(!fids.length){sub.classList.remove('visible');return;}
+  row.innerHTML=fids.map(fid=>`<div class="sub-chip ${state.features.has(fid)?'on':''}" data-pfid="${fid}">${FEAT_MAP[fid].label}</div>`).join('');
+  row.querySelectorAll('.sub-chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      const fid=chip.dataset.pfid;
+      if(state.features.has(fid)){state.features.delete(fid);chip.classList.remove('on');}
+      else{state.features.add(fid);chip.classList.add('on');}
+      render();
+    });
+  });
+  sub.classList.add('visible');
+}
+function clearProtoFeatures(){
+  const all=['modbusTCP','opcUA','profinet','modbusRTU','ascii'];
+  all.forEach(f=>state.features.delete(f));
+}
+
+// Step 2 — I/O chips
 document.querySelectorAll('.io-chip').forEach(chip=>{
   chip.addEventListener('click',()=>{
     const io=chip.dataset.io;
-    if(state.io.has(io)){
-      state.io.delete(io);chip.classList.remove('on');
-      clearSubType(io);
-    }else{
-      state.io.add(io);chip.classList.add('on');
-    }
-    if(!state.io.size){state.features.clear();syncAdv();}
+    if(state.io.has(io)){state.io.delete(io);chip.classList.remove('on');clearSubType(io);}
+    else{state.io.add(io);chip.classList.add('on');}
+    if(!state.io.size){const cloudEnv=['mqtt','azure','restful','snmp','ruggedized','ip67'];cloudEnv.forEach(f=>state.features.delete(f));syncStep3Chips();}
     updateSubVisibility();updateSteps();render();
   });
 });
-
 // Sub-chips (single-select per group)
-function bindSubChips(groupId, stateProp){
+function bindSubChips(groupId,stateProp){
   document.querySelectorAll(`#${groupId} .sub-chip`).forEach(chip=>{
     chip.addEventListener('click',()=>{
       const t=chip.dataset.subtype;
-      if(state[stateProp]===t){
-        state[stateProp]=null;chip.classList.remove('on');
-      }else{
-        state[stateProp]=t;
-        document.querySelectorAll(`#${groupId} .sub-chip`).forEach(c=>c.classList.remove('on'));
-        chip.classList.add('on');
-      }
+      if(state[stateProp]===t){state[stateProp]=null;chip.classList.remove('on');}
+      else{state[stateProp]=t;document.querySelectorAll(`#${groupId} .sub-chip`).forEach(c=>c.classList.remove('on'));chip.classList.add('on');}
       render();
     });
   });
 }
-bindSubChips('ai-sub',   'aiType');
-bindSubChips('ao-sub',   'aoType');
-bindSubChips('di-sub',   'diType');
-bindSubChips('do-sub',   'doType');
-bindSubChips('relay-sub','relayType');
-
-// Step 3
-document.querySelectorAll('.adv-check').forEach(cb=>{
-  cb.addEventListener('change',()=>{
-    if(cb.checked)state.features.add(cb.dataset.fid);
-    else state.features.delete(cb.dataset.fid);
-    render();
-  });
-});
+bindSubChips('ai-sub','aiType');bindSubChips('ao-sub','aoType');bindSubChips('di-sub','diType');
+bindSubChips('do-sub','doType');bindSubChips('relay-sub','relayType');
 
 function clearSubType(io){
   const map={hasAI:'aiType',hasAO:'aoType',hasDI:'diType',hasDO:'doType',hasRelay:'relayType'};
-  const subId={hasAI:'ai-sub',hasAO:'ao-sub',hasDI:'di-sub',hasDO:'do-sub',hasRelay:'relay-sub'};
-  const p=map[io];if(p){state[p]=null;}
-  const s=subId[io];if(s)document.querySelectorAll(`#${s} .sub-chip`).forEach(c=>c.classList.remove('on'));
+  const sid={hasAI:'ai-sub',hasAO:'ao-sub',hasDI:'di-sub',hasDO:'do-sub',hasRelay:'relay-sub'};
+  const p=map[io];if(p)state[p]=null;
+  const s=sid[io];if(s)document.querySelectorAll(`#${s} .sub-chip`).forEach(c=>c.classList.remove('on'));
 }
 function resetSubTypes(){
   ['aiType','aoType','diType','doType','relayType'].forEach(k=>state[k]=null);
-  ['ai-sub','ao-sub','di-sub','do-sub','relay-sub'].forEach(id=>
-    document.querySelectorAll(`#${id} .sub-chip`).forEach(c=>c.classList.remove('on')));
+  ['ai-sub','ao-sub','di-sub','do-sub','relay-sub'].forEach(id=>document.querySelectorAll(`#${id} .sub-chip`).forEach(c=>c.classList.remove('on')));
 }
 function updateSubVisibility(){
   document.getElementById('ai-sub').classList.toggle('visible',state.io.has('hasAI'));
@@ -518,16 +514,23 @@ function updateSubVisibility(){
   document.getElementById('do-sub').classList.toggle('visible',state.io.has('hasDO'));
   document.getElementById('relay-sub').classList.toggle('visible',state.io.has('hasRelay'));
 }
-function syncIO(){
-  document.querySelectorAll('.io-chip').forEach(c=>c.classList.remove('on'));
-  updateSubVisibility();
+function syncIO(){document.querySelectorAll('.io-chip').forEach(c=>c.classList.remove('on'));updateSubVisibility();}
+function syncStep3Chips(){
+  state.features.forEach(f=>{
+    const chip=document.querySelector(`[data-fid="${f}"]`);if(chip)chip.classList.remove('on');
+  });
+  // Only clear cloud/env features, not protocol features
+  ['mqtt','azure','restful','snmp','ruggedized','ip67'].forEach(f=>state.features.delete(f));
+  updateGrpCounts();
 }
-function syncAdv(){document.querySelectorAll('.adv-check').forEach(cb=>{cb.checked=false;});}
 function resetAll(){
-  state.comm=null;state.io.clear();state.features.clear();
+  state.comm=null;state.io.clear();state.features.clear();state.wiring=null;
   document.querySelectorAll('.comm-tile').forEach(t=>t.classList.remove('on'));
-  syncIO();syncAdv();resetSubTypes();updateSteps();render();
+  syncIO();resetSubTypes();
+  document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));
+  updateGrpCounts();updateWiringVisibility();updateProtoSub();updateSteps();render();
 }
+
 function updateSteps(){
   const s1=!!state.comm,s2=state.io.size>0;
   const b1=document.getElementById('badge-step1'),c1=document.getElementById('card-step1');
@@ -543,6 +546,8 @@ function updateSteps(){
 function getFiltered(){
   return P.filter(p=>{
     if(state.comm&&!p[state.comm])return false;
+    if(state.wiring==='daisy'&&!p.daisy)return false;
+    // wiring==='star' means no extra filter (all ethernet products support star)
     if(state.io.size&&![...state.io].some(io=>IO_FN[io](p)))return false;
     if(state.aiType&&IO_FN.hasAI(p)){
       if(state.aiType==='voltcurr'&&!p.aiVoltCurr)return false;
@@ -575,13 +580,12 @@ function renderCard(p){
   if(p.ai_ch) io.push(`<span class="ciob ai">AI <span class="ch">${p.ai_ch}</span></span>`);
   if(p.ao_ch) io.push(`<span class="ciob ao">AO <span class="ch">${p.ao_ch}ch</span></span>`);
   if(p.di_ch) io.push(`<span class="ciob di">DI <span class="ch">${p.di_ch}ch</span></span>`);
-  if(p.do_ch) io.push(`<span class="ciob do">DO <span class="ch">${p.do_ch}ch${p.do_type?' '+p.do_type[0]:''}</span></span>`);
+  if(p.do_ch) io.push(`<span class="ciob do">DO <span class="ch">${p.do_ch}ch</span></span>`);
   if(p.relay_ch)io.push(`<span class="ciob relay">Relay <span class="ch">${p.relay_ch}</span></span>`);
   const groups=FEAT_GROUPS.map(g=>{
     const chips=g.fids.filter(fid=>p[fid]).map(fid=>{
       const dim=state.features.size&&!state.features.has(fid)?'dim':'';
-      const shortLabel=FEAT_MAP[fid].label.replace(/^\S+ /,'');
-      return`<span class="cfeat ${g.cls} ${dim}">${shortLabel}</span>`;
+      return`<span class="cfeat ${dim}">${FEAT_MAP[fid].label}</span>`;
     });
     if(!chips.length)return'';
     return`<div class="feat-group"><span class="feat-group-label">${g.label}</span><div class="feat-group-chips">${chips.join('')}</div></div>`;
@@ -600,11 +604,11 @@ function renderCard(p){
 }
 
 const SUB_TAG={
-  voltcurr:'AI: Voltage/Current', tc:'AI: Thermocouple', rtd:'AI: RTD',
-  aoVoltage:'AO: Voltage', aoCurrent:'AO: Current',
-  diSink:'DI: Sink (NPN)', diSource:'DI: Source (PNP)',
-  doSink:'DO: Sink', doSource:'DO: Source',
-  relayFormA:'Relay: Form A', relayFormC:'Relay: Form C',
+  voltcurr:'AI: V/mA',tc:'AI: TC',rtd:'AI: RTD',
+  aoVoltage:'AO: Voltage',aoCurrent:'AO: Current',
+  diSink:'DI: Sink',diSource:'DI: Source',
+  doSink:'DO: Sink',doSource:'DO: Source',
+  relayFormA:'Relay: Form A',relayFormC:'Relay: Form C',
 };
 
 function render(){
@@ -613,55 +617,64 @@ function render(){
   document.getElementById('results').style.display=ready?'block':'none';
   if(!ready){
     const ph=document.getElementById('placeholder');
-    if(!state.comm){
-      ph.innerHTML=`<div class="placeholder-icon">🗂️</div><h2>Start Your Selection</h2><p>Answer the steps on the left to find the ADAM modules that fit your application.</p><div class="arrow">← Step 1: Choose your communication type</div>`;
-    }else{
-      ph.innerHTML=`<div class="placeholder-icon">⚡</div><h2>Now choose your I/O type</h2><p>Select the signal types your application needs.</p><div class="arrow">← Step 2: Select I/O type</div>`;
-    }
+    ph.innerHTML=!state.comm
+      ?`<div class="placeholder-icon">🗂️</div><h2>Start Your Selection</h2><p>Answer the steps on the left to find the ADAM modules that fit your application.</p><div class="arrow">← Step 1: Choose your communication type</div>`
+      :`<div class="placeholder-icon">⚡</div><h2>Now choose your I/O type</h2><p>Select the signal types your application needs.</p><div class="arrow">← Step 2: Select I/O type</div>`;
     return;
   }
   const filtered=getFiltered();
   document.getElementById('count').textContent=filtered.length;
   const tags=[];
-  if(state.comm)tags.push({label:state.comm==='ethernet'?'🌐 Ethernet':'🔌 RS-485',rm:'clearComm()'});
+  if(state.comm)tags.push({label:state.comm==='ethernet'?'Ethernet':'RS-485',rm:'clearComm()'});
+  if(state.wiring)tags.push({label:state.wiring==='daisy'?'Daisy Chain':'Star / Direct',rm:'clearWiring()'});
   [...state.io].forEach(io=>tags.push({label:IO_LABEL[io],rm:`removeIO('${io}')`}));
   ['aiType','aoType','diType','doType','relayType'].forEach(k=>{
     if(state[k])tags.push({label:SUB_TAG[state[k]]||state[k],rm:`clearSub('${k}')`});
   });
-  [...state.features].forEach(fid=>{const f=FEAT_MAP[fid];if(f)tags.push({label:f.label,rm:`removeF('${fid}')`});});
+  [...state.features].forEach(fid=>{if(FEAT_MAP[fid])tags.push({label:FEAT_MAP[fid].label,rm:`removeF('${fid}')`});});
   document.getElementById('atags').innerHTML=tags.map(t=>`<span class="atag">${t.label}<button onclick="${t.rm}">×</button></span>`).join('');
   const grid=document.getElementById('grid');
-  if(!filtered.length){
-    grid.innerHTML=`<div class="no-results"><div style="font-size:40px;opacity:.3">🔍</div><p>No modules match all selected requirements.</p><small><a href="#" onclick="resetStep3();return false;">Clear Step 3 filters</a> or <a href="#" onclick="resetAll();return false;">reset all</a></small></div>`;
-  }else{
-    grid.innerHTML=filtered.map(renderCard).join('');
-  }
+  grid.innerHTML=filtered.length
+    ?filtered.map(renderCard).join('')
+    :`<div class="no-results"><div style="font-size:40px;opacity:.3">🔍</div><p>No modules match all selected requirements.</p><small><a href="#" onclick="resetStep3();return false;">Clear Step 3 filters</a> or <a href="#" onclick="resetAll();return false;">reset all</a></small></div>`;
 }
 function clearComm(){
-  state.comm=null;state.io.clear();state.features.clear();
+  state.comm=null;state.io.clear();state.features.clear();state.wiring=null;
   document.querySelectorAll('.comm-tile').forEach(t=>t.classList.remove('on'));
-  syncIO();syncAdv();resetSubTypes();updateSteps();render();
+  syncIO();document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));
+  updateGrpCounts();resetSubTypes();updateWiringVisibility();updateProtoSub();updateSteps();render();
 }
+function clearWiring(){state.wiring=null;document.querySelectorAll('#wiring-sub .sub-chip').forEach(c=>c.classList.remove('on'));render();}
 function removeIO(io){
-  state.io.delete(io);
-  document.querySelector(`.io-chip[data-io="${io}"]`)?.classList.remove('on');
-  clearSubType(io);
-  if(!state.io.size){state.features.clear();syncAdv();}
+  state.io.delete(io);document.querySelector(`.io-chip[data-io="${io}"]`)?.classList.remove('on');clearSubType(io);
+  if(!state.io.size){['mqtt','azure','restful','snmp','ruggedized','ip67'].forEach(f=>state.features.delete(f));syncStep3Chips();}
   updateSubVisibility();updateSteps();render();
 }
 function clearSub(key){
-  const subId={aiType:'ai-sub',aoType:'ao-sub',diType:'di-sub',doType:'do-sub',relayType:'relay-sub'};
-  state[key]=null;
-  const s=subId[key];if(s)document.querySelectorAll(`#${s} .sub-chip`).forEach(c=>c.classList.remove('on'));
-  render();
+  const sid={aiType:'ai-sub',aoType:'ao-sub',diType:'di-sub',doType:'do-sub',relayType:'relay-sub'};
+  state[key]=null;const s=sid[key];if(s)document.querySelectorAll(`#${s} .sub-chip`).forEach(c=>c.classList.remove('on'));render();
 }
 function removeF(fid){
   state.features.delete(fid);
-  const cb=document.querySelector(`.adv-check[data-fid="${fid}"]`);
-  if(cb)cb.checked=false;
-  render();
+  const chip=document.querySelector(`[data-fid="${fid}"]`)||document.querySelector(`[data-pfid="${fid}"]`);
+  if(chip)chip.classList.remove('on');
+  updateGrpCounts();render();
 }
-function resetStep3(){state.features.clear();syncAdv();render();}
+function resetStep3(){
+  ['mqtt','azure','restful','snmp','ruggedized','ip67'].forEach(f=>state.features.delete(f));
+  document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));
+  updateGrpCounts();render();
+}
+
+// Collapsible groups
+function toggleGrp(id){document.getElementById(id).classList.toggle('open');}
+function updateGrpCounts(){
+  for(const[grpId,cfg] of Object.entries(STEP3_GROUPS)){
+    const n=cfg.fids.filter(f=>state.features.has(f)).length;
+    const el=document.getElementById(cfg.cnt);
+    if(el){el.textContent=n||'';el.classList.toggle('visible',n>0);}
+  }
+}
 
 // Modal
 function openModal(idx){
@@ -709,7 +722,7 @@ function openModal(idx){
   const protos=[
     {key:'ascii',label:'ASCII'},{key:'modbusRTU',label:'Modbus/RTU'},{key:'modbusTCP',label:'Modbus/TCP'},
     {key:'mqtt',label:'MQTT'},{key:'azure',label:'Azure IoT'},{key:'restful',label:'RESTful'},
-    {key:'snmp',label:'SNMP'},{key:'profinet',label:'PROFINET'},
+    {key:'snmp',label:'SNMP'},{key:'profinet',label:'PROFINET'},{key:'opcUA',label:'OPC UA'},
   ];
   secs.push(`<div class="spec-section"><div class="spec-section-title">Communication Protocols</div><div class="proto-grid">${protos.map(pr=>`<span class="proto-badge ${p[pr.key]?'on':'off'}">${pr.label}</span>`).join('')}</div></div>`);
   const certs=['CE','FCC','UL'];
@@ -723,29 +736,6 @@ function sec(title,rows){return`<div class="spec-section"><div class="spec-secti
 function closeModal(e){if(e.target===document.getElementById('modal-overlay'))closeModalDirect();}
 function closeModalDirect(){document.getElementById('modal-overlay').classList.remove('open');document.body.style.overflow='';}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModalDirect();});
-
-// Collapsible groups
-function toggleGrp(id){document.getElementById(id).classList.toggle('open');}
-const GRP_FIDS={
-  'grp-cloud':   ['mqtt','azure','restful','snmp'],
-  'grp-wiring':  ['daisy'],
-  'grp-protocol':['modbusTCP','modbusRTU','profinet'],
-  'grp-env':     ['ruggedized','ip67'],
-};
-const GRP_CNT_ID={'grp-cloud':'cnt-cloud','grp-wiring':'cnt-wiring','grp-protocol':'cnt-protocol','grp-env':'cnt-env'};
-function updateGrpCounts(){
-  for(const [grp,fids] of Object.entries(GRP_FIDS)){
-    const n=fids.filter(f=>state.features.has(f)).length;
-    const el=document.getElementById(GRP_CNT_ID[grp]);
-    if(el){el.textContent=n||'';el.classList.toggle('visible',n>0);}
-  }
-}
-document.querySelectorAll('.adv-check').forEach(cb=>{
-  cb.addEventListener('change',updateGrpCounts);
-});
-// Also reset counts when syncAdv is called
-const _origSyncAdv=syncAdv;
-syncAdv=function(){_origSyncAdv();updateGrpCounts();};
 
 updateSteps();render();
 </script>
